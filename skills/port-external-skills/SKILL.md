@@ -11,42 +11,7 @@ metadata:
     related_skills: [hermes-agent-skill-authoring]
 ---
 
-# Port External Skill Repos to Hermes
-
-Many GitHub repos ship "skills" targeted at Claude Code, OpenClaw, or Codex — usually MIT-licensed, with a `skills/*/SKILL.md` layout and optional Python tools or JSON reference files. The user often wants them in Hermes because Hermes reads `SKILL.md` directly. This skill is the porting workflow: preserve the body and scripts verbatim, rewrite only the frontmatter to Hermes format.
-
-## When to Use
-
-- User shares a GitHub URL for a skills repo and asks "port this", "make it work here", "install in Hermes", or "clone karo".
-- A skill bundle exists on disk from a previous clone and needs to become Hermes-loadable.
-- Multiple skills in one repo — port as a batch, not one at a time.
-
-Not this skill for: skills already in Hermes format (just copy the folder). Also not for skills that need a paid API to actually work — port them anyway but flag in the reply that a specific lib/client requires a paid key.
-
-## Porting Procedure
-
-### 1. Clone into Almari, not home
-
-```bash
-mkdir -p /sdcard/Hermes_Almari/06_TRANSIENT/<slug>_repo
-cd /sdcard/Hermes_Almari/06_TRANSIENT/<slug>_repo
-git clone --depth 1 <repo-url>
-```
-
-Never clone into `~` — Almari is the durable scratch space and home stays clean.
-
-### 2. Enumerate skills and their support files
-
-```bash
-ls skills/
-for d in skills/*/; do find "$d" -type f; done
-```
-
-Every skill has a `SKILL.md`. Some add `references/*.md`, `templates/`, or `scripts/*.py`. Note them — they travel with the skill.
-
-### 3. Read frontmatter, extract body
-
-Use `read_file` or Python `open()`. Body = everything after the closing `\n---\n`. Never rewrite the body — it is the actual instructions and any rewriting loses fidelity.
+\n`. Never rewrite the body — it is the actual instructions and any rewriting loses fidelity.
 
 ```python
 def extract_body(src):
